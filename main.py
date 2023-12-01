@@ -73,7 +73,11 @@ def plot_increments(
             xys_part2 = [xys_part2[0], xys_part2[-1]]
         for xys_part, ax in zip([xys_part1, xys_part2], axs.flat):
             y0 = xys_part[0][1] if reset else 0.0
-            ax.plot([x for x, _ in xys_part], [y - y0 for _, y in xys_part])
+            ax.plot(
+                [x for x, _ in xys_part],
+                [y - y0 for _, y in xys_part],
+                marker="o" if lines else "",
+            )
             ax.set(xlabel="$t$", ylabel="$W_n(t)$", title=f"$n={size}$")
             ax.set_ylim(-3.0, 3.0)
             ax.grid()
@@ -86,9 +90,10 @@ if __name__ == "__main__":
     random.seed(seed)
     plot_increments(sequence_scaled_2, 1000, "increment1.png", lines=False, reset=False)
     random.seed(seed)
-    plot_increments(sequence_scaled_2, 1000, "increment2.png", lines=False, reset=True)
+    plot_increments(sequence_scaled_2, 1000, "increment2.png", lines=True, reset=False)
     random.seed(seed)
     plot_increments(sequence_scaled_2, 1000, "increment3.png", lines=True, reset=True)
+    seed = 5
     random.seed(seed)
     plot(raw_sequence, "$X_n(t)$", "binom1.png", (-0.5, 20.5))
     random.seed(seed)
