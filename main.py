@@ -68,6 +68,9 @@ def plot_increments(
     for xys in xyss:
         xys_part1 = [(x, y) for x, y in xys if 0.0 <= x <= 0.5]
         xys_part2 = [(x, y) for x, y in xys if 0.5 <= x <= 1.0]
+        if lines:
+            xys_part1 = [xys_part1[0], xys_part1[-1]]
+            xys_part2 = [xys_part2[0], xys_part2[-1]]
         for xys_part, ax in zip([xys_part1, xys_part2], axs.flat):
             y0 = xys_part[0][1] if reset else 0.0
             ax.plot([x for x, _ in xys_part], [y - y0 for _, y in xys_part])
@@ -76,14 +79,16 @@ def plot_increments(
             ax.grid()
     plt.tight_layout()
     plt.savefig(filename, transparent=True)
-    fig, axs = plt.subplots(1, 2, figsize=(10, 6))
 
 
 if __name__ == "__main__":
-    seed = 5
+    seed = 6
     random.seed(seed)
-    plot_increments(sequence_scaled_2, 1000, "increment1.png", reset=False)
-    plot_increments(sequence_scaled_2, 1000, "increment2.png", reset=True)
+    plot_increments(sequence_scaled_2, 1000, "increment1.png", lines=False, reset=False)
+    random.seed(seed)
+    plot_increments(sequence_scaled_2, 1000, "increment2.png", lines=False, reset=True)
+    random.seed(seed)
+    plot_increments(sequence_scaled_2, 1000, "increment3.png", lines=True, reset=True)
     random.seed(seed)
     plot(raw_sequence, "$X_n(t)$", "binom1.png", (-0.5, 20.5))
     random.seed(seed)
