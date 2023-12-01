@@ -1,6 +1,6 @@
 import math
 import random
-from collections.abc import Iterable, Callable
+from collections.abc import Iterable, Callable, Sequence
 
 import matplotlib.pyplot as plt
 
@@ -56,8 +56,34 @@ def plot(
     plt.savefig(filename, transparent=True)
 
 
+def plot_increments(
+    seq: Callable[[int], Iterable[float, float]],
+    size: int,
+    filename: str,
+    lines: bool = True,
+    reset: bool = True,
+) -> None:
+    fig, axs = plt.subplots(1, 2, figsize=(10, 6))
+    xyss = [list(seq(size)) for _ in range(20)]
+    for xys in xyss:
+        xys_part1 = [(x, y) for x, y in xys if 0.0 <= x <= 0.5]
+        xys_part2 = [(x, y) for x, y in xys if 0.5 <= x <= 1.0]
+        for xys_part, ax in zip([xys_part1, xys_part2], axs.flat):
+            y0 = xys_part[0][1] if reset else 0.0
+            ax.plot([x for x, _ in xys_part], [y - y0 for _, y in xys_part])
+            ax.set(xlabel="$t$", ylabel="$W_n(t)$", title=f"$n={size}$")
+            ax.set_ylim(-3.0, 3.0)
+            ax.grid()
+    plt.tight_layout()
+    plt.savefig(filename, transparent=True)
+    fig, axs = plt.subplots(1, 2, figsize=(10, 6))
+
+
 if __name__ == "__main__":
     seed = 5
+    random.seed(seed)
+    plot_increments(sequence_scaled_2, 1000, "increment1.png", reset=False)
+    plot_increments(sequence_scaled_2, 1000, "increment2.png", reset=True)
     random.seed(seed)
     plot(raw_sequence, "$X_n(t)$", "binom1.png", (-0.5, 20.5))
     random.seed(seed)
